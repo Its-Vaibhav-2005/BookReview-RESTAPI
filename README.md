@@ -85,9 +85,9 @@ The application follows a modular architecture with the following components:
 ```python
 # POST /api/register
 {
-    "username": "john_doe",
-    "password": "secure_password",
-    "isAdmin": false
+    "username": "Vaibhav Pandey",
+    "password": "my-password",
+    "isAdmin": true
 }
 ```
 
@@ -144,34 +144,103 @@ The server will start on `http://localhost:3100`
 
 ## Database Schema
 
-### User Table
-- id (Primary Key)
-- username (Unique)
-- password (Hashed)
-- isAdmin (Boolean)
+### User Table Schema
+| Column Name | Data Type | Constraints | Description |
+|-------------|-----------|-------------|-------------|
+| id | INTEGER | PRIMARY KEY | Unique identifier for user |
+| username | VARCHAR(100) | UNIQUE, NOT NULL | User's login name |
+| password | VARCHAR(128) | NOT NULL | Hashed password |
+| isAdmin | BOOLEAN | DEFAULT FALSE | Admin privileges flag |
 
-### Book Table
-- id (Primary Key)
-- title
-- author
-- genre
+### Book Table Schema
+| Column Name | Data Type | Constraints | Description |
+|-------------|-----------|-------------|-------------|
+| id | INTEGER | PRIMARY KEY | Unique identifier for book |
+| title | VARCHAR(150) | NOT NULL | Book title |
+| author | VARCHAR(100) | NOT NULL | Book author |
+| genre | VARCHAR(100) | NULL | Book genre |
 
-### Review Table
-- id (Primary Key)
-- content
-- rating
-- userId (Foreign Key)
-- bookId (Foreign Key)
+### Review Table Schema
+| Column Name | Data Type | Constraints | Description |
+|-------------|-----------|-------------|-------------|
+| id | INTEGER | PRIMARY KEY | Unique identifier for review |
+| content | TEXT | NOT NULL | Review text content |
+| rating | INTEGER | NOT NULL | Rating (1-5) |
+| userId | INTEGER | FOREIGN KEY | Reference to User table |
+| bookId | INTEGER | FOREIGN KEY | Reference to Book table |
+
+### Sample Data
+
+#### Books Table Sample Entry
+```json
+{
+    "id": 1,
+    "title": "Harry Potter and the Philosopher's Stone",
+    "author": "J.K. Rowling",
+    "genre": "Fantasy"
+}
+```
+
+#### Reviews Table Sample Entry
+```json
+{
+    "id": 1,
+    "content": "A magical journey that introduces us to the wizarding world. Perfect for readers of all ages!",
+    "rating": 5,
+    "userId": 1,
+    "bookId": 1
+}
+```
+
+#### Users Table Sample Entry
+```json
+{
+    "id": 1,
+    "username": "Vaibhav Pandey",
+    "password": "hashed_password_here",
+    "isAdmin": true
+}
+```
+
+### Relationships
+- One User can have many Reviews (One-to-Many)
+- One Book can have many Reviews (One-to-Many)
+- Each Review belongs to one User and one Book (Many-to-One)
 
 ## Error Handling
 
-The API returns appropriate HTTP status codes and error messages:
-- 200: Success
-- 201: Created
-- 400: Bad Request
-- 401: Unauthorized
-- 403: Forbidden
-- 404: Not Found
+| HTTP Status Code | Error Code | Description | Example Response |
+|-----------------|------------|-------------|------------------|
+| 200 | OK | Request successful | `{"message": "Operation successful"}` |
+| 201 | Created | Resource created successfully | `{"message": "Book added successfully"}` |
+| 400 | Bad Request | Invalid request parameters | `{"message": "Title and author are required"}` |
+| 401 | Unauthorized | Authentication required | `{"message": "Invalid credentials"}` |
+| 403 | Forbidden | Insufficient permissions | `{"message": "Admin privileges required"}` |
+| 404 | Not Found | Resource not found | `{"message": "Book not found"}` |
+| 409 | Conflict | Resource already exists | `{"message": "Username already exists"}` |
+| 422 | Unprocessable Entity | Invalid data format | `{"message": "Invalid rating value"}` |
+| 500 | Internal Server Error | Server-side error | `{"message": "Internal server error"}` |
+
+### Common Error Scenarios
+
+1. **Authentication Errors**
+   - Invalid credentials
+   - Missing JWT token
+   - Expired JWT token
+
+2. **Validation Errors**
+   - Missing required fields
+   - Invalid data types
+   - Out of range values (e.g., rating > 5)
+
+3. **Authorization Errors**
+   - Non-admin user trying to modify books
+   - User trying to modify another user's review
+
+4. **Resource Errors**
+   - Book not found
+   - User not found
+   - Review not found
 
 ## Contributing
 

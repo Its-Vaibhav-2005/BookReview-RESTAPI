@@ -242,14 +242,6 @@ The server will start on `http://localhost:3100`
    - User not found
    - Review not found
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
 ## Contact
 
 For any questions or suggestions, please open an issue in the [GitHub repository](https://github.com/Its-Vaibhav-2005/BookReview-RESTAPI/issues). 
